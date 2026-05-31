@@ -1,0 +1,63 @@
+{% extends 'portal/base_admin.html' %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 pb-3 border-bottom border-secondary">
+    <h2 class="font-heading text-white fw-bold mb-0"><i class="bi bi-star text-info me-2"></i>Reviews</h2>
+    <div class="btn-group font-subheading">
+        <a href="?status=all" class="btn btn-sm {% if status == 'all' %}btn-info{% else %}btn-outline-secondary{% endif %}">All</a>
+        <a href="?status=pending" class="btn btn-sm {% if status == 'pending' %}btn-warning{% else %}btn-outline-secondary{% endif %}">Pending</a>
+        <a href="?status=approved" class="btn btn-sm {% if status == 'approved' %}btn-success{% else %}btn-outline-secondary{% endif %}">Approved</a>
+    </div>
+</div>
+
+<div class="glass-panel p-0 border-secondary overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-dark table-hover mb-0 align-middle" style="--bs-table-bg: transparent; font-size: 0.85rem;">
+            <thead>
+                <tr class="font-subheading text-secondary border-secondary">
+                    <th class="ps-4">TITLE</th>
+                    <th>PRODUCT</th>
+                    <th>AUTHOR</th>
+                    <th class="text-center">RATING</th>
+                    <th class="text-center">STATUS</th>
+                    <th>DATE</th>
+                    <th class="text-end pe-4">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews %}
+                <tr class="border-secondary" style="border-color: rgba(255,255,255,0.04)!important;">
+                    <td class="ps-4">
+                        <span class="text-white fw-bold">{{ review.title }}</span>
+                        <br><small class="text-muted">{{ review.content|truncatechars:60 }}</small>
+                    </td>
+                    <td class="text-muted font-subheading">{{ review.product.name|truncatechars:25 }}</td>
+                    <td class="text-white">{{ review.author_name }}</td>
+                    <td class="text-center text-warning fw-bold"><i class="bi bi-star-fill"></i> {{ review.rating }}</td>
+                    <td class="text-center">
+                        {% if review.is_approved %}
+                        <span class="badge bg-success text-dark">Approved</span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-muted">{{ review.created_at|date:"M d, Y" }}</td>
+                    <td class="text-end pe-4">
+                        <form method="post" action="{% url 'portal:review_toggle' review.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-{% if review.is_approved %}warning{% else %}success{% endif %}" title="Toggle approval">
+                                <i class="bi bi-{% if review.is_approved %}x-circle{% else %}check-circle{% endif %}"></i>
+                            </button>
+                        </form>
+                        <a href="{% url 'portal:review_edit' review.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-pencil"></i></a>
+                        <a href="{% url 'portal:review_delete' review.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-center text-muted py-5">No reviews found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
