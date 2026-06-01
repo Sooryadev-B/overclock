@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- 1. FULLSCREEN GAMING HERO BANNER -->
+<section class="position-relative overflow-hidden mb-5 d-flex align-items-center" style="min-height: 80vh; background: radial-gradient(circle at right, rgba(0, 229, 255, 0.15), transparent 60%);">
+    <div class="container py-5">
+        <div class="row align-items-center justify-content-between g-5">
+            <!-- Text Content -->
+            <div class="col-lg-6 reveal-on-scroll">
+                <span class="badge-cyber mb-3 d-inline-block"><i class="bi bi-broadcast text-info me-2"></i> NEXT GEN STATIONS ARIVED</span>
+                <h1 class="display-3 font-heading text-white fw-bold mb-3" style="line-height: 1.1;">
+                    UNLEASH THE <span class="neon-glow-pink text-pink">OVERCLOCK</span> POWER
+                </h1>
+                <p class="fs-5 text-gray mb-4" style="line-height: 1.6;">
+                    Equipped with state-of-the-art liquid-cooled RTX 5090 rigs, overclocked Intel Core i9 processors, and military-grade components. Assembled to destroy boundaries.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'shop:catalog' %}" class="btn btn-cyber py-3 px-4 font-subheading">ENTER CATALOG</a>
+                    <a href="{% url 'shop:builder' %}" class="btn btn-cyber btn-cyber-purple py-3 px-4 font-subheading">CUSTOM PC BUILDER</a>
+                </div>
+            </div>
+            
+            <!-- Hero Graphic Image -->
+            <div class="col-lg-5 text-center position-relative reveal-on-scroll">
+                <!-- Glowing background circles -->
+                <div class="position-absolute top-50 start-50 translate-middle rounded-circle bg-pink opacity-25 filter-blur" style="width: 250px; height: 250px; filter: blur(60px); z-index: -1;"></div>
+                <div class="position-absolute top-50 start-50 translate-middle rounded-circle bg-info opacity-25 filter-blur" style="width: 300px; height: 300px; filter: blur(80px); z-index: -1;"></div>
+                
+                <img src="/static/img/nemesis_rtx_5090_edition.webp" 
+                     alt="Flagship Gaming PC Setup" 
+                     class="img-fluid animated-float" 
+                     style="max-height: 480px; filter: drop-shadow(0 15px 25px rgba(0, 229, 255, 0.4));"
+                     onerror="this.onerror=null; this.src='https://placehold.co/500x500/15151d/ffffff/png?text=NEMESIS+5090+DESKTOP';">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. LIMITED TIME FLASH DEALS -->
+<section class="container py-4 mb-5 reveal-on-scroll">
+    <div class="glass-panel p-4 border-cyan rgb-border-active">
+        <div class="rgb-border-inner p-4">
+            <div class="row align-items-center g-4 justify-content-between">
+                <div class="col-lg-6">
+                    <span class="badge bg-pink text-white font-subheading px-2 py-1 mb-2">NEURAL FLASH OFFER</span>
+                    <h3 class="font-heading mb-2">RTX 5090 LAUNCH PROMO</h3>
+                    <p class="text-gray mb-0">Use decrypt code <strong class="text-info font-subheading">OVERCLOCK15</strong> in your checkout node to obtain 15% off all system components and setups.</p>
+                </div>
+                <div class="col-lg-5 text-center text-lg-end">
+                    <div id="deal-countdown" class="d-flex justify-content-center justify-content-lg-end">
+                        <!-- Loaded dynamically via JS timer -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. CUSTOM PC SPOTLIGHT -->
+<section class="container py-5 mb-5 reveal-on-scroll">
+    <div class="row align-items-center g-5">
+        <!-- Spotlight Image Info -->
+        <div class="col-lg-6 position-relative">
+            <div class="glass-panel p-4 border-secondary text-center position-relative">
+                <img src="/static/img/apex_horizon_ryzen_9.webp" 
+                     alt="Apex Custom PC Renders" 
+                     class="img-fluid rounded animated-float" 
+                     style="max-height: 420px; filter: drop-shadow(var(--glow-purple));"
+                     onerror="this.onerror=null; this.src='https://placehold.co/600x500/15151d/ffffff/png?text=APEX+SPOTLIGHT';">
+            </div>
+        </div>
+        
+        <!-- Specs Info -->
+        <div class="col-lg-6">
+            <span class="badge-cyber badge-cyber-purple mb-2 d-inline-block">PREBUILD OF THE WEEK</span>
+            <h2 class="font-heading text-white fw-bold mb-3">APEX HORIZON RYZEN 9</h2>
+            <p class="text-gray mb-4">
+                Fully tuned, optimized, and ready to go. The Apex Horizon utilizes Ryzen 9 3D V-Cache capabilities combined with dual PCIe Gen 5 M.2 SSD layouts to deliver staggering speeds.
+            </p>
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fs-3 text-info"><i class="bi bi-cpu"></i></div>
+                        <div>
+                            <small class="text-muted d-block font-subheading">PROCESSOR</small>
+                            <span class="fw-bold">Ryzen 9 7950X3D</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fs-3 text-pink"><i class="bi bi-gpu-card"></i></div>
+                        <div>
+                            <small class="text-muted d-block font-subheading">GRAPHICS</small>
+                            <span class="fw-bold">RTX 4090 24GB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fs-3 text-purple"><i class="bi bi-speedometer"></i></div>
+                        <div>
+                            <small class="text-muted d-block font-subheading">MEMORY</small>
+                            <span class="fw-bold">32GB DDR5 6000MHz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fs-3 text-info"><i class="bi bi-fan"></i></div>
+                        <div>
+                            <small class="text-muted d-block font-subheading">LIQUID AIO</small>
+                            <span class="fw-bold">Kraken 360 LCD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex gap-3">
+                <a href="{% url 'shop:product_detail' slug='apex-horizon-ryzen-9' %}" class="btn btn-cyber btn-cyber-purple py-3 px-4 font-subheading">ACQUIRE STATION</a>
+                <a href="{% url 'shop:builder' %}" class="btn btn-link text-decoration-none text-info font-subheading d-flex align-items-center gap-1">Modify Specs <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. FEATURED GAMING DESKTOPS -->
+<section class="container py-5 mb-5 reveal-on-scroll">
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-3">
+        <div>
+            <span class="text-pink font-subheading fw-bold text-uppercase" style="letter-spacing: 2px;">READY BUILD STATIONS</span>
+            <h2 class="font-heading text-white fw-bold mb-0">FEATURED GAMING DESKTOPS</h2>
+        </div>
+        <a href="{% url 'shop:catalog' %}?category=prebuilt" class="btn btn-sm btn-outline-info font-subheading">VIEW ALL RIGS</a>
+    </div>
+
+    <div class="row g-4">
+        {% for product in featured_pcs %}
+        <div class="col-lg-4 col-md-6">
+            {% include 'partials/product_card.html' with product=product %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 5. GAMING SETUP BANNERS (Split screen action) -->
+<section class="container py-4 mb-5 reveal-on-scroll">
+    <div class="row g-4">
+        <!-- Banner 1: Builder -->
+        <div class="col-md-6">
+            <div class="glass-panel p-5 border-cyan h-100 position-relative overflow-hidden d-flex flex-column justify-content-between" style="background: linear-gradient(135deg, rgba(21, 21, 29, 0.9) 0%, rgba(0, 229, 255, 0.05) 100%);">
+                <div class="mb-4">
+                    <span class="badge bg-info text-dark font-subheading px-2 py-1 mb-2">NEURAL CUSTOMIZER</span>
+                    <h3 class="font-heading text-white fw-bold">CUSTOM BATTLESTATION BUILDER</h3>
+                    <p class="text-gray mb-0">Assemble your dream gaming computer unit step-by-step. Our engine cross-checks CPU/MOBO sockets, power draws, and sizing parameters instantly.</p>
+                </div>
+                <div>
+                    <a href="{% url 'shop:builder' %}" class="btn btn-cyber font-subheading px-4">START DESIGN <i class="bi bi-chevron-right ms-1"></i></a>
+                </div>
+                <!-- Ambient blur backdrop -->
+                <i class="bi bi-cpu text-info opacity-10 position-absolute" style="font-size: 15rem; right: -30px; bottom: -50px; z-index: -1;"></i>
+            </div>
+        </div>
+        <!-- Banner 2: Hardware Parts -->
+        <div class="col-md-6">
+            <div class="glass-panel p-5 border-pink h-100 position-relative overflow-hidden d-flex flex-column justify-content-between" style="background: linear-gradient(135deg, rgba(21, 21, 29, 0.9) 0%, rgba(255, 0, 255, 0.05) 100%);">
+                <div class="mb-4">
+                    <span class="badge bg-pink text-white font-subheading px-2 py-1 mb-2">HARDWARE DEPOT</span>
+                    <h3 class="font-heading text-white fw-bold">HIGH-END UPGRADE PARTS</h3>
+                    <p class="text-gray mb-0">Browse isolated GPU units, extreme processors, customizable Dominator titanium RAM sticks, and fast Gen5 SSD components. Direct factory shipments.</p>
+                </div>
+                <div>
+                    <a href="{% url 'shop:catalog' %}" class="btn btn-cyber btn-cyber-pink font-subheading px-4">INSPECT PARTS <i class="bi bi-chevron-right ms-1"></i></a>
+                </div>
+                <!-- Ambient blur backdrop -->
+                <i class="bi bi-gpu-card text-pink opacity-10 position-absolute" style="font-size: 15rem; right: -30px; bottom: -50px; z-index: -1;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. TRENDING COMPONENTS -->
+<section class="container py-5 mb-5 reveal-on-scroll">
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-3">
+        <div>
+            <span class="text-pink font-subheading fw-bold text-uppercase" style="letter-spacing: 2px;">NEURAL PARTS MARKET</span>
+            <h2 class="font-heading text-white fw-bold mb-0">TRENDING COMPONENTS</h2>
+        </div>
+        <a href="{% url 'shop:catalog' %}" class="btn btn-sm btn-outline-info font-subheading">ALL SPEC PIECES</a>
+    </div>
+
+    <div class="row g-4">
+        {% for product in trending_components %}
+        <div class="col-lg-4 col-md-6">
+            {% include 'partials/product_card.html' with product=product %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 7. BRAND SHOWCASE CAROUSEL -->
+<section class="container py-4 mb-5 reveal-on-scroll">
+    <div class="glass-panel p-4 text-center">
+        <span class="text-muted font-subheading mb-3 d-block uppercase" style="font-size: 0.8rem; letter-spacing: 3px;">DIRECT INTEGRATION PARTNERS</span>
+        <div class="row align-items-center justify-content-center g-4">
+            <div class="col-lg-2 col-md-4 col-6 brand-carousel-item">
+                <a href="{% url 'shop:catalog' %}?q=NVIDIA" class="text-decoration-none">
+                    <span class="fs-4 fw-bold font-heading text-white transition">NVIDIA</span>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 brand-carousel-item">
+                <a href="{% url 'shop:catalog' %}?q=INTEL" class="text-decoration-none">
+                    <span class="fs-4 fw-bold font-heading text-white transition">INTEL</span>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 brand-carousel-item">
+                <a href="{% url 'shop:catalog' %}?q=AMD" class="text-decoration-none">
+                    <span class="fs-4 fw-bold font-heading text-white transition">AMD</span>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 brand-carousel-item">
+                <a href="{% url 'shop:catalog' %}?q=ASUS" class="text-decoration-none">
+                    <span class="fs-4 fw-bold font-heading text-white transition">ASUS ROG</span>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 brand-carousel-item">
+                <a href="{% url 'shop:catalog' %}?q=CORSAIR" class="text-decoration-none">
+                    <span class="fs-4 fw-bold font-heading text-white transition">CORSAIR</span>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 brand-carousel-item">
+                <a href="{% url 'shop:catalog' %}?q=NZXT" class="text-decoration-none">
+                    <span class="fs-4 fw-bold font-heading text-white transition">NZXT</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .brand-carousel-item a {
+        display: inline-block;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .brand-carousel-item a:hover {
+        transform: scale(1.15);
+    }
+    .brand-carousel-item a:hover span {
+        color: var(--accent-blue) !important;
+        text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+    }
+</style>
+
+<!-- 8. CUSTOMER REVIEWS -->
+<section class="container py-5 mb-5 reveal-on-scroll">
+    <div class="text-center mb-5">
+        <span class="text-pink font-subheading fw-bold text-uppercase" style="letter-spacing: 2px;">NEURAL NETWORK FEEDBACK</span>
+        <h2 class="font-heading text-white fw-bold">CUSTOMER REVIEWS</h2>
+    </div>
+
+    <div class="row g-4">
+        <!-- Review 1 -->
+        <div class="col-md-4">
+            <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center gap-1 mb-3 text-warning">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-gray italic mb-4" style="font-size: 0.95rem; line-height: 1.6;">
+                        "My Nemesis RTX 5090 prebuilt arrived in under 4 days via drone. Cable management is pristine, and the custom water loop looks incredible. Overclocking runs smooth at 60C max load!"
+                    </p>
+                </div>
+                <div class="d-flex align-items-center gap-3 pt-3 border-top border-secondary">
+                    <div class="rounded-circle border border-info d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background: rgba(0,229,255,0.05);">
+                        <span class="fw-bold text-info font-heading">AM</span>
+                    </div>
+                    <div>
+                        <span class="d-block text-white fw-bold font-subheading">ALEX MERCER</span>
+                        <small class="text-muted" style="font-size: 0.75rem;">Neural Rig Owner</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Review 2 -->
+        <div class="col-md-4">
+            <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center gap-1 mb-3 text-warning">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-gray italic mb-4" style="font-size: 0.95rem; line-height: 1.6;">
+                        "The Custom Builder wizard is phenomenal. Interactive wattage indicators saved me from overloading my budget gold PSU. Extremely fast and highly responsive interface."
+                    </p>
+                </div>
+                <div class="d-flex align-items-center gap-3 pt-3 border-top border-secondary">
+                    <div class="rounded-circle border border-purple d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background: rgba(139,92,246,0.05);">
+                        <span class="fw-bold text-purple font-heading">SC</span>
+                    </div>
+                    <div>
+                        <span class="d-block text-white fw-bold font-subheading">SARAH CONNOR</span>
+                        <small class="text-muted" style="font-size: 0.75rem;">Station Architect</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Review 3 -->
+        <div class="col-md-4">
+            <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center gap-1 mb-3 text-warning">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-gray italic mb-4" style="font-size: 0.95rem; line-height: 1.6;">
+                        "Stunning cyberpunk aesthetic! Ordered Valkyrie whiteout, looks so clean under cold light. Easily pushes 200+ FPS in all latest virtual realities. Highly recommend."
+                    </p>
+                </div>
+                <div class="d-flex align-items-center gap-3 pt-3 border-top border-secondary">
+                    <div class="rounded-circle border border-pink d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background: rgba(255,0,255,0.05);">
+                        <span class="fw-bold text-pink font-heading">NA</span>
+                    </div>
+                    <div>
+                        <span class="d-block text-white fw-bold font-subheading">NEO ANDERSON</span>
+                        <small class="text-muted" style="font-size: 0.75rem;">System Hacker</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
