@@ -2,9 +2,47 @@
 
 Overclock is a premium gaming PC e-commerce platform split into two independent Django applications:
 
-| App | Folder | Port | Purpose |
-|-----|--------|------|---------|
-| **PC Shop** | `pcshop/` | 8000 | Customer-facing storefront |
+## About
+
+Overclock provides a customer-facing storefront for browsing, configuring, and buying gaming PCs and components, plus a separate admin portal for staff to manage products, reviews, and feedback. The two apps run independently but share a single SQLite database so content remains in sync during development.
+
+## Key Features
+
+- Customer storefront: catalog, product detail pages, PC Builder, cart, checkout, and user dashboard.
+- Admin portal: product CRUD, review moderation, feedback triage, and user management.
+- Demo & seed data: quick seeding of sample products, reviews, feedback, and an admin user for development.
+- Cyberpunk-themed responsive UI with simple analytics dashboards and Chart.js usage for demo charts.
+
+## Quick Start — open the website
+
+Start the PC Shop (port 8000):
+
+```bash
+cd pcshop
+python manage.py migrate
+python manage.py seed_db
+python manage.py runserver 8000
+```
+
+Start the Admin Portal (port 8001):
+
+```bash
+cd adminportal
+python manage.py migrate
+python manage.py setup_admin
+python manage.py runserver 8001
+```
+
+Open in your browser:
+
+- PC Shop: http://127.0.0.1:8000/
+- Admin Portal: http://127.0.0.1:8001/
+
+Both apps share the same SQLite database (`pcshop/db.sqlite3`), so products, users, reviews, and feedback stay in sync across the storefront and admin panel.
+
+| App                    | Folder           | Port | Purpose                    |
+| ---------------------- | ---------------- | ---- | -------------------------- |
+| **PC Shop**      | `pcshop/`      | 8000 | Customer-facing storefront |
 | **Admin Portal** | `adminportal/` | 8001 | Staff management dashboard |
 
 Both apps share the same SQLite database (`pcshop/db.sqlite3`), so products, users, reviews, and feedback stay in sync across the storefront and admin panel.
@@ -85,6 +123,7 @@ python manage.py seed_db
 ```
 
 `seed_db` populates:
+
 - Product categories (prebuilt, GPU, CPU, RAM, storage)
 - 7 sample products (prebuilt rigs and components)
 - Sample reviews and feedback
@@ -136,10 +175,10 @@ Open: http://127.0.0.1:8001/
 
 ## Credentials
 
-| App | Username | Password | Notes |
-|-----|----------|----------|-------|
-| Admin Portal | `soorya` | `soorya2006` | Staff/superuser — created by `setup_admin` |
-| PC Shop | *(register)* | *(your choice)* | Create a customer account via `/accounts/register/` |
+| App          | Username       | Password          | Notes                                                 |
+| ------------ | -------------- | ----------------- | ----------------------------------------------------- |
+| Admin Portal | `soorya`     | `soorya2006`    | Staff/superuser — created by `setup_admin`         |
+| PC Shop      | *(register)* | *(your choice)* | Create a customer account via `/accounts/register/` |
 
 The admin portal login is at http://127.0.0.1:8001/login/
 
@@ -149,24 +188,24 @@ The admin portal login is at http://127.0.0.1:8001/login/
 
 ### Storefront Pages
 
-| URL | Page | Description |
-|-----|------|-------------|
-| `/` | Home | Featured prebuilt rigs and trending components |
-| `/catalog/` | Catalog | Browse all products with category filter and search |
-| `/product/<slug>/` | Product Detail | Full specs, pricing, and related products |
-| `/builder/` | PC Builder | Interactive custom PC configurator with part selection |
-| `/cart/` | Shopping Cart | Cart items, upgrades, and add-on suggestions |
-| `/checkout/` | Checkout | Order summary and checkout flow |
-| `/dashboard/` | User Dashboard | Order history, saved builds, and wishlist |
-| `/admin-dashboard/` | Analytics | Sales charts and inventory overview (demo/mock data) |
+| URL                   | Page           | Description                                            |
+| --------------------- | -------------- | ------------------------------------------------------ |
+| `/`                 | Home           | Featured prebuilt rigs and trending components         |
+| `/catalog/`         | Catalog        | Browse all products with category filter and search    |
+| `/product/<slug>/`  | Product Detail | Full specs, pricing, and related products              |
+| `/builder/`         | PC Builder     | Interactive custom PC configurator with part selection |
+| `/cart/`            | Shopping Cart  | Cart items, upgrades, and add-on suggestions           |
+| `/checkout/`        | Checkout       | Order summary and checkout flow                        |
+| `/dashboard/`       | User Dashboard | Order history, saved builds, and wishlist              |
+| `/admin-dashboard/` | Analytics      | Sales charts and inventory overview (demo/mock data)   |
 
 ### User Accounts
 
-| URL | Description |
-|-----|-------------|
+| URL                     | Description                   |
+| ----------------------- | ----------------------------- |
 | `/accounts/register/` | Create a new customer account |
-| `/accounts/login/` | Log in to the storefront |
-| `/accounts/logout/` | Log out |
+| `/accounts/login/`    | Log in to the storefront      |
+| `/accounts/logout/`   | Log out                       |
 
 ### Shop App — Data Models
 
@@ -206,23 +245,23 @@ The admin portal is a completely separate Django project. It reads and writes th
 
 ### Admin Pages
 
-| URL | Page | Description |
-|-----|------|-------------|
-| `/login/` | Login | Staff-only authentication |
-| `/` | Dashboard | Overview stats, recent reviews, feedback, and products |
-| `/products/` | Product List | Search and filter all products |
-| `/products/add/` | Add Product | Create a new product |
-| `/products/<id>/edit/` | Edit Product | Update product details and specs |
-| `/products/<id>/delete/` | Delete Product | Remove a product |
-| `/users/` | User List | Search all registered users |
-| `/users/<id>/edit/` | Edit User | Update user info, active/staff status |
-| `/reviews/` | Review List | Filter by pending or approved |
-| `/reviews/<id>/edit/` | Edit Review | Modify review content and approval |
-| `/reviews/<id>/toggle/` | Toggle Approval | Approve or unapprove a review |
-| `/reviews/<id>/delete/` | Delete Review | Remove a review |
-| `/feedback/` | Feedback List | Filter by status (new, read, resolved) |
-| `/feedback/<id>/` | Feedback Detail | View message and update status |
-| `/feedback/<id>/delete/` | Delete Feedback | Remove a feedback entry |
+| URL                        | Page            | Description                                            |
+| -------------------------- | --------------- | ------------------------------------------------------ |
+| `/login/`                | Login           | Staff-only authentication                              |
+| `/`                      | Dashboard       | Overview stats, recent reviews, feedback, and products |
+| `/products/`             | Product List    | Search and filter all products                         |
+| `/products/add/`         | Add Product     | Create a new product                                   |
+| `/products/<id>/edit/`   | Edit Product    | Update product details and specs                       |
+| `/products/<id>/delete/` | Delete Product  | Remove a product                                       |
+| `/users/`                | User List       | Search all registered users                            |
+| `/users/<id>/edit/`      | Edit User       | Update user info, active/staff status                  |
+| `/reviews/`              | Review List     | Filter by pending or approved                          |
+| `/reviews/<id>/edit/`    | Edit Review     | Modify review content and approval                     |
+| `/reviews/<id>/toggle/`  | Toggle Approval | Approve or unapprove a review                          |
+| `/reviews/<id>/delete/`  | Delete Review   | Remove a review                                        |
+| `/feedback/`             | Feedback List   | Filter by status (new, read, resolved)                 |
+| `/feedback/<id>/`        | Feedback Detail | View message and update status                         |
+| `/feedback/<id>/delete/` | Delete Feedback | Remove a feedback entry                                |
 
 ### Admin Portal — Key Features
 
@@ -282,36 +321,34 @@ python manage.py setup_admin
 ## Typical Development Workflow
 
 1. **Start PC Shop** and seed the database if this is a fresh setup:
+
    ```bash
    cd pcshop
    python manage.py migrate
    python manage.py seed_db
    python manage.py runserver 8000
    ```
-
 2. **Start Admin Portal** in a second terminal:
+
    ```bash
    cd adminportal
    python manage.py setup_admin
    python manage.py runserver 8001
    ```
-
 3. **Manage content** via the admin portal — add/edit products, moderate reviews, handle feedback.
-
 4. **Verify changes** on the storefront at http://127.0.0.1:8000/ — product updates appear immediately since both apps share the same database.
-
 5. **Register a test customer** at http://127.0.0.1:8000/accounts/register/ to test the user-facing account flow.
 
 ---
 
 ## URL Quick Reference
 
-| Service | Base URL |
-|---------|----------|
-| PC Shop storefront | http://127.0.0.1:8000/ |
+| Service              | Base URL                     |
+| -------------------- | ---------------------------- |
+| PC Shop storefront   | http://127.0.0.1:8000/       |
 | PC Shop Django admin | http://127.0.0.1:8000/admin/ |
-| Admin Portal | http://127.0.0.1:8001/ |
-| Admin Portal login | http://127.0.0.1:8001/login/ |
+| Admin Portal         | http://127.0.0.1:8001/       |
+| Admin Portal login   | http://127.0.0.1:8001/login/ |
 
 The PC Shop navbar includes an **ADMIN** link that opens the admin portal at port 8001 in a new tab.
 
