@@ -1,0 +1,403 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4" id="product-detail-view" data-base-price="{{ product.price }}">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb text-uppercase font-subheading" style="font-size: 0.8rem;">
+            <li class="breadcrumb-item"><a href="{% url 'shop:home' %}" class="text-secondary text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'shop:catalog' %}" class="text-secondary text-decoration-none">Catalog</a></li>
+            <li class="breadcrumb-item active text-info" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <!-- 1. IMAGE GALLERY -->
+        <div class="col-lg-6">
+            <div class="glass-panel p-4 text-center mb-3 border-secondary" style="height: 400px; display: flex; align-items: center; justify-content: center;">
+                <img src="/static/img/{{ product.image }}.webp" 
+                     alt="{{ product.name }}" 
+                     class="img-fluid animated-float" 
+                     id="main-product-gallery-image"
+                     style="max-height: 340px; object-fit: contain; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.5));"
+                     onerror="this.onerror=null; this.src='https://placehold.co/600x500/15151d/ffffff/png?text={{ product.name|urlencode }}';">
+            </div>
+            
+            <!-- Thumbnail gallery -->
+            <div class="row g-2 justify-content-center">
+                {% for img in product.gallery %}
+                <div class="col-3">
+                    <div class="glass-panel p-2 text-center gallery-thumbnail {% if forloop.first %}active{% endif %}" onclick="updateGallery('/static/img/{{ img }}.webp', this)">
+                        <img src="/static/img/{{ img }}.webp" 
+                             alt="Thumbnail" 
+                             class="img-fluid" 
+                             style="max-height: 60px; object-fit: contain;"
+                             onerror="this.onerror=null; this.src='https://placehold.co/100x80/15151d/ffffff/png?text=SPEC+PIC';">
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-3">
+                    <div class="glass-panel p-2 text-center gallery-thumbnail active">
+                        <img src="https://placehold.co/100x80/15151d/ffffff/png?text={{ product.name|slice:':4' }}" alt="Placeholder" class="img-fluid">
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 2. CONFIGURATOR & PURCHASE BOX -->
+        <div class="col-lg-6">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                {% if product.badge %}
+                <span class="badge-cyber badge-cyber-pink">{{ product.badge }}</span>
+                {% endif %}
+                <span class="badge bg-success text-dark font-subheading fw-bold px-2 py-1"><i class="bi bi-shield-check me-1"></i>COMPATIBILITY ACCREDITED</span>
+            </div>
+            
+            <h1 class="font-heading text-white fw-bold display-5 mb-2">{{ product.name }}</h1>
+            
+            <div class="d-flex align-items-center gap-2 mb-4 star-rating">
+                <i class="bi bi-star-fill text-warning"></i>
+                <span class="text-white fw-bold fs-5">{{ product.rating }}</span>
+                <span class="text-muted">({{ product.reviews_count }} ratings)</span>
+            </div>
+
+            <p class="text-gray mb-4" style="line-height: 1.7; font-size: 1.05rem;">
+                {{ product.description }}
+            </p>
+
+            <!-- Dynamic Upgrades Selector Box -->
+            <div class="glass-panel p-4 border-cyan mb-4 rgb-border-active">
+                <div class="rgb-border-inner p-4">
+                    <h5 class="font-heading text-white mb-3" style="font-size: 0.95rem;"><i class="bi bi-gear-fill text-info me-2"></i>Configure Station Hardware</h5>
+                    
+                    <!-- RAM dropdown upgrade -->
+                    <div class="mb-3">
+                        <label class="form-label text-muted font-subheading" style="font-size: 0.8rem;">SYSTEM RAM UPGRADE</label>
+                        <select class="form-select form-glass bg-transparent text-white border-secondary font-subheading" id="ram-upgrade-select" onchange="recalculatePrice()">
+                            <option value="0" class="bg-dark">Default Configuration (Included)</option>
+                            <option value="150" class="bg-dark">Upgrade to 64GB Dominator Titanium DDR5 (+$150.00)</option>
+                            <option value="320" class="bg-dark">Upgrade to 128GB G.Skill Trident RGB DDR5 (+$320.00)</option>
+                        </select>
+                    </div>
+
+                    <!-- SSD dropdown upgrade -->
+                    <div class="mb-3">
+                        <label class="form-label text-muted font-subheading" style="font-size: 0.8rem;">NVME SSD STORAGE UPGRADE</label>
+                        <select class="form-select form-glass bg-transparent text-white border-secondary font-subheading" id="ssd-upgrade-select" onchange="recalculatePrice()">
+                            <option value="0" class="bg-dark">Default Storage Configuration (Included)</option>
+                            <option value="179" class="bg-dark">Add Secondary 2TB Samsung 990 Pro SSD (+$179.00)</option>
+                            <option value="499" class="bg-dark">Add Secondary 4TB Crucial T700 Gen5 SSD (+$499.00)</option>
+                        </select>
+                    </div>
+
+                    <!-- Warranty selection -->
+                    <div class="mb-4">
+                        <label class="form-label text-muted font-subheading" style="font-size: 0.8rem;">STATION WARRANTY SHIELD</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input bg-transparent border-secondary" type="radio" name="warrantyRadio" id="warranty1" checked value="0" onchange="recalculatePrice()">
+                                <label class="form-check-label text-white font-subheading" for="warranty1" style="font-size: 0.9rem;">3-Yr Std (Included)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input bg-transparent border-secondary" type="radio" name="warrantyRadio" id="warranty2" value="199" onchange="recalculatePrice()">
+                                <label class="form-check-label text-white font-subheading" for="warranty2" style="font-size: 0.9rem;">5-Yr Elite Shield (+$199)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pricing output -->
+                    <div class="d-flex align-items-center justify-content-between pt-3 border-top border-secondary">
+                        <div>
+                            <span class="text-muted font-subheading d-block" style="font-size: 0.75rem;">TOTAL ESTIMATE</span>
+                            <span class="font-heading text-pink display-6 fw-bold" id="product-total-price-text">${{ product.price|floatformat:2 }}</span>
+                        </div>
+                        
+                        <div>
+                            {% if product.in_stock %}
+                            <button type="button" class="btn btn-lg btn-cyber btn-quick-buy px-4 font-subheading" data-product-name="{{ product.name }}" id="detail-purchase-btn">
+                                <i class="bi bi-cart3 me-2"></i> ACQUIRE STATION
+                            </button>
+                            {% else %}
+                            <button class="btn btn-lg btn-secondary text-white font-subheading disabled" disabled>SOLDOUT</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. TECHNICAL SPECIFICATIONS & WARRANTY INFORMATION -->
+    <section class="py-5">
+        <div class="row g-5">
+            <!-- Specs table -->
+            <div class="col-lg-7">
+                <h4 class="font-heading text-white mb-4 pb-2 border-bottom border-secondary">Hardware Specifications</h4>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover border-secondary glass-panel mb-0" style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(255,255,255,0.02);">
+                        <tbody>
+                            {% for spec, value in product.specs_table.items %}
+                            <tr>
+                                <td class="font-subheading text-info py-3 border-secondary" style="width: 30%; font-size: 0.95rem;">{{ spec|upper }}</td>
+                                <td class="text-white py-3 border-secondary">{{ value }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="font-subheading text-info py-3 border-secondary">PROCESSOR</td>
+                                <td class="text-white py-3 border-secondary">{{ product.cpu }}</td>
+                            </tr>
+                            <tr>
+                                <td class="font-subheading text-info py-3 border-secondary">GRAPHICS</td>
+                                <td class="text-white py-3 border-secondary">{{ product.gpu }}</td>
+                            </tr>
+                            <tr>
+                                <td class="font-subheading text-info py-3 border-secondary">MEMORY</td>
+                                <td class="text-white py-3 border-secondary">{{ product.ram }}</td>
+                            </tr>
+                            <tr>
+                                <td class="font-subheading text-info py-3 border-secondary">STORAGE</td>
+                                <td class="text-white py-3 border-secondary">{{ product.storage }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Warranty card and metrics -->
+            <div class="col-lg-5">
+                <h4 class="font-heading text-white mb-4 pb-2 border-bottom border-secondary">Warranty & Service</h4>
+                
+                <div class="glass-panel p-4 border-secondary mb-4">
+                    <div class="d-flex gap-3 align-items-start mb-3">
+                        <span class="fs-2 text-info"><i class="bi bi-shield-fill-check"></i></span>
+                        <div>
+                            <h6 class="text-white font-heading mb-1" style="font-size: 0.9rem;">3-Year Premium Support</h6>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Full hardware warranty covering repairs, defects, and part replacements with premium shipping included.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-3 align-items-start mb-3">
+                        <span class="fs-2 text-pink"><i class="bi bi-tools"></i></span>
+                        <div>
+                            <h6 class="text-white font-heading mb-1" style="font-size: 0.9rem;">Lifetime Technical Diagnostics</h6>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Access our system testing tools and contact our overclocking technicians for calibration support.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-3 align-items-start">
+                        <span class="fs-2 text-purple"><i class="bi bi-speedometer2"></i></span>
+                        <div>
+                            <h6 class="text-white font-heading mb-1" style="font-size: 0.9rem;">Professional Performance Tuning</h6>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Each machine is benchmarked and calibrated to reach optimal performance stability.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-4 border-pink text-center">
+                    <h5 class="font-heading text-pink mb-2">NEURAL VERIFICATION STATUS</h5>
+                    <p class="text-gray mb-0" style="font-size: 0.9rem;">
+                        This product is certified 100% compatible with high-end ray tracing systems and digital streaming platforms.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3.5. CUSTOMER REVIEWS SECTION -->
+    <section class="py-5 border-top border-secondary" id="reviews-section">
+        <div class="row g-5">
+            <!-- Reviews List & Statistics -->
+            <div class="col-lg-7">
+                <h4 class="font-heading text-white mb-4 pb-2 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-chat-square-text text-info me-2"></i>Customer Reviews</span>
+                    <span class="badge bg-secondary font-subheading" style="font-size: 0.8rem;">{{ reviews.count }} Reviews</span>
+                </h4>
+
+                <!-- Reviews summary card -->
+                <div class="glass-panel p-4 mb-4 border-secondary d-flex align-items-center gap-4 flex-wrap">
+                    <div class="text-center px-3 border-end border-secondary" style="min-width: 120px;">
+                        <h1 class="display-4 fw-bold text-white mb-1 font-heading">{{ product.rating }}</h1>
+                        <div class="text-warning mb-1" style="font-size: 0.9rem;">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi {% if product.rating >= 4.8 %}bi-star-fill{% elif product.rating >= 4.3 %}bi-star-half{% else %}bi-star{% endif %}"></i>
+                        </div>
+                        <span class="text-muted font-subheading" style="font-size: 0.75rem;">OUT OF 5 STARS</span>
+                    </div>
+
+                    <div class="flex-grow-1">
+                        <h6 class="text-white font-heading mb-2">Automated Review Feed</h6>
+                        <p class="text-gray mb-0 font-subheading" style="font-size: 0.85rem; line-height: 1.5;">
+                            All telemetry reports submitted by clients are auto-approved and broadcasted instantly to the public. Review category tags allow filtering of feed logs.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Review list -->
+                <div class="reviews-list-container" style="max-height: 500px; overflow-y: auto; padding-right: 5px;">
+                    {% for review in reviews %}
+                    <div class="glass-panel p-4 border-secondary mb-3 hover-cyan-border" style="transition: border-color 0.3s ease;">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div>
+                                <span class="text-white fw-bold me-2 font-heading">{{ review.title }}</span>
+                                <span class="text-warning" style="font-size: 0.8rem;">
+                                    {% if review.rating >= 1 %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star"></i>{% endif %}
+                                    {% if review.rating >= 2 %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star"></i>{% endif %}
+                                    {% if review.rating >= 3 %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star"></i>{% endif %}
+                                    {% if review.rating >= 4 %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star"></i>{% endif %}
+                                    {% if review.rating >= 5 %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star"></i>{% endif %}
+                                </span>
+                            </div>
+                            <span class="text-muted font-subheading" style="font-size: 0.8rem;">{{ review.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span class="badge {% if review.category == 'performance' %}bg-info text-dark{% elif review.category == 'build' %}bg-primary text-white{% elif review.category == 'value' %}bg-success text-dark{% elif review.category == 'shipping' %}bg-warning text-dark{% elif review.category == 'support' %}bg-danger text-white{% else %}bg-secondary text-white{% endif %} text-uppercase font-subheading" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                                {{ review.get_category_display }}
+                            </span>
+                            <small class="text-muted font-subheading"><i class="bi bi-person-fill text-secondary me-1"></i>{{ review.author_name }}</small>
+                            <small class="text-muted font-subheading ms-auto" style="font-size: 0.75rem;"><i class="bi bi-broadcast text-info me-1"></i>{{ review.get_source_display }}</small>
+                        </div>
+                        <p class="text-gray mb-0" style="font-size: 0.95rem; line-height: 1.6;">
+                            {{ review.content }}
+                        </p>
+                    </div>
+                    {% empty %}
+                    <div class="glass-panel p-5 text-center border-secondary text-muted">
+                        <i class="bi bi-chat-square-dots display-6 mb-3 d-block text-secondary"></i>
+                        No telemetry logs available. Be the first to submit a review for this unit.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Submit Review Form -->
+            <div class="col-lg-5">
+                <div class="glass-panel p-4 border-pink" style="position: sticky; top: 20px;">
+                    <h4 class="font-heading text-white mb-4 pb-2 border-bottom border-pink">
+                        <i class="bi bi-pencil-square text-pink me-2"></i>Transmit Review
+                    </h4>
+
+                    <form method="post" action="{% url 'shop:product_detail' product.slug %}#reviews-section">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="author_name" class="form-label text-muted font-subheading" style="font-size: 0.8rem;">IDENTIFICATION / AUTHOR NAME</label>
+                            <input type="text" class="form-control form-glass bg-transparent border-secondary text-white" id="author_name" name="author_name" 
+                                   value="{% if user.is_authenticated %}{{ user.username }}{% endif %}" placeholder="Enter name or alias" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rating" class="form-label text-muted font-subheading" style="font-size: 0.8rem;">TELEMETRY RATING</label>
+                            <select class="form-select form-glass bg-dark border-secondary text-white font-subheading" id="rating" name="rating" required>
+                                <option value="5">★★★★★ - 5 (Peak Performance)</option>
+                                <option value="4">★★★★☆ - 4 (Stable)</option>
+                                <option value="3">★★★☆☆ - 3 (Operational)</option>
+                                <option value="2">★★☆☆☆ - 2 (Unstable)</option>
+                                <option value="1">★☆☆☆☆ - 1 (Critical Failure)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="category" class="form-label text-muted font-subheading" style="font-size: 0.8rem;">LOG CATEGORY</label>
+                            <select class="form-select form-glass bg-dark border-secondary text-white font-subheading" id="category" name="category" required>
+                                <option value="performance">Performance & Overclocking</option>
+                                <option value="build">Build Quality & Assembly</option>
+                                <option value="value">Value for Money</option>
+                                <option value="shipping">Shipping & Packaging</option>
+                                <option value="support">Customer Support</option>
+                                <option value="other">Other / General Log</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="title" class="form-label text-muted font-subheading" style="font-size: 0.8rem;">TRANSMISSION TITLE</label>
+                            <input type="text" class="form-control form-glass bg-transparent border-secondary text-white" id="title" name="title" 
+                                   placeholder="e.g. Runs flawlessly under load" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="content" class="form-label text-muted font-subheading" style="font-size: 0.8rem;">DETAILED REPORT</label>
+                            <textarea class="form-control form-glass bg-transparent border-secondary text-white" id="content" name="content" 
+                                      rows="4" placeholder="Input detailed logs and system behavior notes..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-lg btn-cyber btn-cyber-pink w-100 font-subheading" style="padding: 12px;">
+                            <i class="bi bi-send-fill me-2"></i> BROADCAST TELEMETRY
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. RELATED PRODUCTS -->
+    <section class="py-5 border-top border-secondary">
+        <h4 class="font-heading text-white mb-4">Related Hardware Setup Configs</h4>
+        <div class="row g-4">
+            {% for related in related_products %}
+            <div class="col-lg-4 col-md-6">
+                {% include 'partials/product_card.html' with product=related %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<!-- Gallery swap inline JS -->
+<script>
+    function updateGallery(imgSrc, thumbEl) {
+        document.getElementById('main-product-gallery-image').src = imgSrc;
+        
+        // Remove active class from all thumbnails
+        const thumbs = document.querySelectorAll('.gallery-thumbnail');
+        thumbs.forEach(t => t.classList.remove('active', 'border-info'));
+        
+        // Add to clicked
+        thumbEl.classList.add('active', 'border-info');
+    }
+
+    function recalculatePrice() {
+        const detailContainer = document.getElementById('product-detail-view');
+        if (!detailContainer) return;
+
+        const basePrice = parseFloat(detailContainer.dataset.basePrice);
+        const ramVal = parseFloat(document.getElementById('ram-upgrade-select').value || '0');
+        const ssdVal = parseFloat(document.getElementById('ssd-upgrade-select').value || '0');
+        
+        // Handle radio selection
+        let warrantyVal = 0;
+        const warrantyRadios = document.getElementsByName('warrantyRadio');
+        for (let radio of warrantyRadios) {
+            if (radio.checked) {
+                warrantyVal = parseFloat(radio.value);
+                break;
+            }
+        }
+
+        const total = basePrice + ramVal + ssdVal + warrantyVal;
+        document.getElementById('product-total-price-text').textContent = '$' + total.toFixed(2);
+        
+        // Update purchase button's data attributes if needed
+        const purchaseBtn = document.getElementById('detail-purchase-btn');
+        if (purchaseBtn) {
+            let configText = [];
+            const ramSelect = document.getElementById('ram-upgrade-select');
+            const ssdSelect = document.getElementById('ssd-upgrade-select');
+            if (ramSelect.selectedIndex > 0) configText.push(ramSelect.options[ramSelect.selectedIndex].text.split('(')[0].trim());
+            if (ssdSelect.selectedIndex > 0) configText.push(ssdSelect.options[ssdSelect.selectedIndex].text.split('(')[0].trim());
+            if (warrantyVal > 0) configText.push('5-Year Warranty Shield');
+            
+            let nameAttr = detailContainer.querySelector('h1').textContent;
+            if (configText.length > 0) {
+                nameAttr += ' (' + configText.join(', ') + ')';
+            }
+            purchaseBtn.dataset.productName = nameAttr;
+        }
+    }
+</script>
+{% endblock %}
